@@ -1,5 +1,6 @@
 package DataStructures.Rudy;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,6 +22,8 @@ public class GameplayScreen implements Screen{
     //object that controls how the camera views the world
     //zoom in/out? Keep everything scaled?
     private Viewport viewport;
+
+    private GameBoard board;
     
     /*
      * This runs one time at the very beginning
@@ -50,6 +53,8 @@ public class GameplayScreen implements Screen{
 
         //???????????????????????????????????, this is the solution to an annoying problem I had :P
         shapeRenderer.setAutoShapeType(true);
+
+        board = new GameBoard(this);
     }
 
     /*
@@ -68,11 +73,11 @@ public class GameplayScreen implements Screen{
 
         //all drawings of shapes MUST go bbetween begin/end
         shapeRenderer.begin();
-        shapeRenderer.circle(100, 100, 10);
         shapeRenderer.end();
 
         //all graphics must go between begin/end
         spriteBatch.begin();
+        board.draw(spriteBatch);
         spriteBatch.end();
     }
 
@@ -98,7 +103,8 @@ public class GameplayScreen implements Screen{
 
     @Override
     public void dispose() {
-        
+        spriteBatch.dispose();
+        shapeRenderer.dispose();
     }
 
 }
