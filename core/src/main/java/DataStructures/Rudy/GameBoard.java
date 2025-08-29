@@ -57,6 +57,7 @@ public class GameBoard {
         flagTile = new Texture("assets/flagTile.jpg");
     }
 
+    //randomly add bombs around the tiles
     public void addBombs() {
         int bombsToBeAdded = numBombs;
 
@@ -71,195 +72,66 @@ public class GameBoard {
         }
     }
 
+    //checks if the row or column is valid (greater or equal to 0, less than the length of the board)
+    public boolean isValid(int row, int col) {
+        return (row >= 0 && row < board.length) && (col >= 0 && col < board[0].length);
+    }
+
+    //checks all surrounding tiles for bombs; returns an integer representing the number of bombs around a location
     public int checkSurroundingTiles(int row, int col) {
+        //integer variable for number of bombs around the tile
         int surroundingBombs = 0;
-        //top left corner
-        if(row == 0 && col == 0) {
-            if(board[row][col+1] == -1){
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col+1] == -1) {
-                surroundingBombs++;
+        
+        //checks if all possible surround tiles are valid and have bombs
+        for(int i = row -1; i <= row +1; i++) {
+            for(int j = col - 1; j <= col +1; j++) {
+                if(isValid(i, j) && board[i][j] == -1) {
+                    surroundingBombs++;
+                }
             }
         }
-        //top row, middle column
-        else if (row == 0 && col > 0 && col < board[row].length - 1) {
-            if(board[row][col+1] == -1){
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col+1] == -1) {
-                surroundingBombs++;
-            }
-            if(board[row][col-1] == -1){
-                surroundingBombs++;
-            }
-            if(board[row+1][col-1] == -1) {
-                surroundingBombs++;
-            }
+        /* 
+        if(isValid(row -1, col) && board[row-1][col] == -1) {
+            surroundingBombs++;
         }
 
-        //top right corner
-        else if (row == 0 && col == board[row].length - 1) {
-            if(board[row][col-1] == -1){
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col-1] == -1) {
-                surroundingBombs++;
-            }
+        if(isValid(row +1, col) && board[row+1][col] == -1) {
+            surroundingBombs++;
         }
 
-        //leftmost column, middle row
-        else if(row > 0 && row < board.length -1 && col == 0) {
-            if(board[row][col+1] == -1){
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col+1] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col+1] == -1) {
-                surroundingBombs++;
-            }
+        if(isValid(row, col-1) && board[row][col-1] == -1) {
+            surroundingBombs++;
         }
 
-        //bottom left corner
-        else if(row == board.length-1 && col == 0) {
-            if(board[row][col+1] == -1){
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col+1] == -1) {
-                surroundingBombs++;
-            }
+        if(isValid(row, col+1) && board[row][col+1] == -1) {
+            surroundingBombs++;
         }
 
-        //bottom row, middle column
-        else if(row == board.length - 1 && col > 0 && col < board[row].length - 1) {
-            if(board[row][col+1] == -1){
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col+1] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row][col-1] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col-1] == -1) {
-                surroundingBombs++;
-            }
+        if(isValid(row -1, col) && board[row-1][col] == -1) {
+            surroundingBombs++;
         }
 
-        //bottom right corner
-        else if(row == board.length-1 && col == board[row].length-1) {
-            if(board[row][col-1] == -1){
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col-1] == -1) {
-                surroundingBombs++;
-            }
+        if(isValid(row -1, col-1) && board[row-1][col-1] == -1) {
+            surroundingBombs++;
+        }
+        if(isValid(row -1, col+1) && board[row-1][col+1] == -1) {
+            surroundingBombs++;
         }
 
-        //rightmost column, middle rows
-        else if(row > 0 && row < board.length -1 && col == board[row].length - 1) {
-            if(board[row][col-1] == -1){
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col-1] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col-1] == -1) {
-                surroundingBombs++;
-            }
+        if(isValid(row +1, col-1) && board[row+1][col-1] == -1) {
+            surroundingBombs++;
         }
 
-        //standard; any tile in the middle
-        else {
-            if(board[row][col+1] == -1){
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col+1] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row][col-1] == -1){
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col-1] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row+1][col-1] == -1) {
-                surroundingBombs++;
-            }
-
-            if(board[row-1][col+1] == -1) {
-                surroundingBombs++;
-            }
+        if(isValid(row +1, col+1) && board[row+1][col+1] == -1) {
+            surroundingBombs++;
         }
+            */
 
+        //return the number of bombs around a tile
         return surroundingBombs;
     }
 
+    //initializes the tiles by giving integer values for tiles surrounding bombs that represent the number of bombs around that tile
     public void initBoardNumbers() {
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
@@ -325,6 +197,5 @@ public class GameBoard {
                 }
             }
         }
-        
     }
 }
