@@ -1,6 +1,8 @@
 package DataStructures.Rudy;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -56,6 +58,16 @@ public class GameplayScreen implements Screen{
 
         board = new GameBoard(this);
     }
+    
+    private void handleMouseClick() {
+        
+        //if there is a left click, fires one time per click
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            System.out.println("left click at (" + Gdx.input.getX() + ", " + Gdx.input.getY());
+            System.out.println(board.getTileAt(Gdx.input.getX(), Gdx.input.getY()));
+            board.handleLeftClick(Gdx.input.getX(), Gdx.input.getY());
+        }
+    }
 
     /*
      * this method runs as fast as it can(or to a set FPS)
@@ -68,6 +80,7 @@ public class GameplayScreen implements Screen{
     @Override
     public void render(float delta) {
         //get player input
+        handleMouseClick();
 
         //process player input, AI
 

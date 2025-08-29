@@ -90,42 +90,6 @@ public class GameBoard {
                 }
             }
         }
-        /* 
-        if(isValid(row -1, col) && board[row-1][col] == -1) {
-            surroundingBombs++;
-        }
-
-        if(isValid(row +1, col) && board[row+1][col] == -1) {
-            surroundingBombs++;
-        }
-
-        if(isValid(row, col-1) && board[row][col-1] == -1) {
-            surroundingBombs++;
-        }
-
-        if(isValid(row, col+1) && board[row][col+1] == -1) {
-            surroundingBombs++;
-        }
-
-        if(isValid(row -1, col) && board[row-1][col] == -1) {
-            surroundingBombs++;
-        }
-
-        if(isValid(row -1, col-1) && board[row-1][col-1] == -1) {
-            surroundingBombs++;
-        }
-        if(isValid(row -1, col+1) && board[row-1][col+1] == -1) {
-            surroundingBombs++;
-        }
-
-        if(isValid(row +1, col-1) && board[row+1][col-1] == -1) {
-            surroundingBombs++;
-        }
-
-        if(isValid(row +1, col+1) && board[row+1][col+1] == -1) {
-            surroundingBombs++;
-        }
-            */
 
         //return the number of bombs around a tile
         return surroundingBombs;
@@ -142,9 +106,31 @@ public class GameBoard {
         }
     }
 
+    //returns the Location on the GameBoard corresponding
+    //to give a (mouseX, mouseY)
+    public Location getTileAt(int mouseX, int mouseY) {
+        int xTile = (mouseX - 100) /25;
+        int yTile = (mouseY - 93) / 25;
+
+        //checks if the location is a real place on tile
+        if(isValid(yTile, xTile)) {
+            return new Location(yTile, xTile);
+        }
+
+        return null;
+    }
+
+    public void handleLeftClick(int mouseX, int mouseY) {
+        Location loc = getTileAt(mouseX, mouseY);
+
+        if(loc != null) {
+            System.out.println("Handling left click..."); 
+            board[loc.getRow()][loc.getCol()] += 10;
+        }
+    }
     public void draw(SpriteBatch spriteBatch) {
         int xOffset = 100;
-        int yOffset = 500;
+        int yOffset = 600;
 
         //each tile is 25x25 pixels
         for(int i = 0; i < board.length; i++) {
@@ -153,38 +139,32 @@ public class GameBoard {
                 if(board[i][j] == 9) {
                     spriteBatch.draw(bombTile, j*25 + xOffset, yOffset-i*25);
                 }
-                //temporarily draw the bombs on the screen
-                //so I know the bombs are being placed corectly
-                //if they are not...I will fix this when 
-                if(board[i][j] ==-1) {
-                    spriteBatch.draw(bombTile, j*25 + xOffset, yOffset-i*25);
-                }
                 //tiles revealing numbers
                 else if(board[i][j] == 10) {
                     spriteBatch.draw(emptyFloorTile, j*25 + xOffset, yOffset-i*25);
                 }
-                else if(board[i][j] == 1) {
+                else if(board[i][j] == 11) {
                     spriteBatch.draw(oneTile, j*25 + xOffset, yOffset-i*25);
                 }
-                else if(board[i][j] == 2) {
+                else if(board[i][j] == 12) {
                     spriteBatch.draw(twoTile, j*25 + xOffset, yOffset-i*25);
                 }
-                else if(board[i][j] == 3) {
+                else if(board[i][j] == 13) {
                     spriteBatch.draw(threeTile, j*25 + xOffset, yOffset-i*25);
                 }
-                else if(board[i][j] == 4) {
+                else if(board[i][j] == 14) {
                     spriteBatch.draw(fourTile, j*25 + xOffset, yOffset-i*25);
                 }
-                else if(board[i][j] == 5) {
+                else if(board[i][j] == 15) {
                     spriteBatch.draw(fiveTile, j*25 + xOffset, yOffset-i*25);
                 }
-                else if(board[i][j] == 6) {
+                else if(board[i][j] == 16) {
                     spriteBatch.draw(sixTile, j*25 + xOffset, yOffset-i*25);
                 }
-                else if(board[i][j] == 7) {
+                else if(board[i][j] == 17) {
                     spriteBatch.draw(sevenTile, j*25 + xOffset, yOffset-i*25);
                 }
-                else if(board[i][j] == 8) {
+                else if(board[i][j] == 18) {
                     spriteBatch.draw(eightTile, j*25 + xOffset, yOffset-i*25);
                 }
                 //+20 to the tile's value indicates a flag 
