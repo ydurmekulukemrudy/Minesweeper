@@ -5,9 +5,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -26,6 +29,9 @@ public class GameplayScreen implements Screen{
     private Viewport viewport;
 
     private GameBoard board;
+    private BitmapFont defaulFont = new BitmapFont();
+    private long gameTimer; //game time counting up
+    private long startTimer;//a time stamp of the start of the game
     
     /*
      * This runs one time at the very beginning
@@ -57,6 +63,8 @@ public class GameplayScreen implements Screen{
         shapeRenderer.setAutoShapeType(true);
 
         board = new GameBoard(this);
+
+        startTimer = TimeUtils.nanoTime();//time stamps the beginning of the game
     }
     
     private void handleMouseClick() {
@@ -66,6 +74,12 @@ public class GameplayScreen implements Screen{
             System.out.println("left click at (" + Gdx.input.getX() + ", " + Gdx.input.getY());
             System.out.println(board.getTileAt(Gdx.input.getX(), Gdx.input.getY()));
             board.handleLeftClick(Gdx.input.getX(), Gdx.input.getY());
+        }
+
+        else if(Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
+            System.out.println("Right click at (" + Gdx.input.getX() + ", " + Gdx.input.getY());
+            System.out.println(board.getTileAt(Gdx.input.getX(), Gdx.input.getY()));
+            board.handleRightClick(Gdx.input.getX(), Gdx.input.getY());
         }
     }
 
@@ -79,6 +93,9 @@ public class GameplayScreen implements Screen{
      */
     @Override
     public void render(float delta) {
+        //clears the screen everytime  it renders
+        clearScreen();
+
         //get player input
         handleMouseClick();
 
@@ -90,8 +107,22 @@ public class GameplayScreen implements Screen{
 
         //all graphics must go between begin/end
         spriteBatch.begin();
+        drawGUI();
         board.draw(spriteBatch);
         spriteBatch.end();
+    }
+
+    //draws our graphical user interface - text, buttons, etc. 
+    private void drawGUI() {
+        gameTimer = TimeUtils.nanoTime() - startTimer;
+        defaulFont.draw(spriteBatch, "Time : " + (gameTimer/1_000_000_000), 450, 650);
+        defaulFont.draw(spriteBatch, "Total Bombs Left: "+ (board.getTotalBombs() - board.getNumFlags()),100 , 650);
+        defaulFont.draw(spriteBatch, "Total Flags Placed: " + board.getNumFlags(), 680, 650);
+    }
+
+    private void clearScreen() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
     @Override

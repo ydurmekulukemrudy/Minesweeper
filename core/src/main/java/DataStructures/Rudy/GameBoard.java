@@ -7,10 +7,18 @@ public class GameBoard {
     //private int varaibles
     private int[][] board;//our data structure
     private int numBombs;//number of bombs
-    private int numFlags;//number of flags you still have to place
+    private int numFlags;//number of flags you have placed
     private static final int BOMB = -1;//help with readability
     private GameplayScreen gameplayScreen;
 
+    public int getTotalBombs() {
+        return numBombs;
+    }
+
+    public int getNumFlags() {
+        return numFlags;
+    }
+    
     //texture = 2d graphic
     private Texture emptyTile;
     private Texture emptyFloorTile;
@@ -29,7 +37,7 @@ public class GameBoard {
         this.gameplayScreen = gameplayScreen;
         board = new int[16][30];
         numBombs = 50;
-        numFlags = numBombs;
+        numFlags = 0;
         loadGraphics();
         addBombs();
         initBoardNumbers();
@@ -78,7 +86,7 @@ public class GameBoard {
     }
 
     //checks all surrounding tiles for bombs; returns an integer representing the number of bombs around a location
-    public int checkSurroundingTiles(int row, int col) {
+    private int checkSurroundingTiles(int row, int col) {
         //integer variable for number of bombs around the tile
         int surroundingBombs = 0;
         
@@ -123,11 +131,40 @@ public class GameBoard {
     public void handleLeftClick(int mouseX, int mouseY) {
         Location loc = getTileAt(mouseX, mouseY);
 
-        if(loc != null) {
+        if(loc != null && board[loc.getRow()][loc.getCol()] < 9) {
             System.out.println("Handling left click..."); 
             board[loc.getRow()][loc.getCol()] += 10;
+            checkForBlankTile(loc.getRow(), loc.getCol());
         }
     }
+    
+    public void handleRightClick(int mouseX, int mouseY) {
+        Location loc = getTileAt(mouseX, mouseY);
+        if(loc != null) {
+            if(board[loc.getRow()][loc.getCol()] < 9) {
+                board[loc.getRow()][loc.getCol()] += 20;
+                numFlags++;
+            }
+            else if(board[loc.getRow()][loc.getCol()] >= 19) {
+                board[loc.getRow()][loc.getCol()] -= 20;
+                numFlags--;
+            }
+        }
+    }
+
+    public void checkForBlankTile(int row, int col) {
+        if(board[row][col] == 10) {
+            for(int i = row -1; i <= row +1; i++) {
+                for(int j = col - 1; j <= col +1; j++) {
+                    if(isValid(i, j) && board[i][j] < 10) {
+                        board[i][j] += 10;
+                        checkForBlankTile(i, j);
+                    }
+                }
+            }
+        }
+    }
+
     public void draw(SpriteBatch spriteBatch) {
         int xOffset = 100;
         int yOffset = 600;
@@ -178,4 +215,5 @@ public class GameBoard {
             }
         }
     }
+
 }
